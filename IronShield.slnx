@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IronShield.Cli/IronShield.Cli.csproj" />
+    <Project Path="src/IronShield.Core/IronShield.Core.csproj" />
+    <Project Path="src/IronShield.Cryptography/IronShield.Cryptography.csproj" />
+    <Project Path="src/IronShield.Storage/IronShield.Storage.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IronShield.Core.Tests/IronShield.Core.Tests.csproj" />
+    <Project Path="tests/IronShield.Cryptography.Tests/IronShield.Cryptography.Tests.csproj" />
+    <Project Path="tests/IronShield.Storage.Tests/IronShield.Storage.Tests.csproj" />
+  </Folder>
+</Solution>
