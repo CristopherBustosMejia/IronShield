@@ -4,5 +4,5 @@ namespace IronShield.Core.Interfaces;
 
 public interface IIronContainerWriter
 {
-    byte[] Write(IronContainer container);   
+    void Write(IronContainer container, Stream stream);   
 }

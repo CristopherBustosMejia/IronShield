@@ -4,5 +4,5 @@ namespace IronShield.Core.Interfaces;
 
 public interface IIronContainerReader
 {
-    IronContainer Read(byte[] data);   
+    IronContainer Read(Stream stream);   
 }
