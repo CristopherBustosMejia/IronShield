@@ -1,5 +1,6 @@
 using System.Text.Json;
 using IronShield.Core.Interfaces;
+using IronShield.Storage.Serialization.Converters;
 
 namespace IronShield.Storage.Serialization;
 
@@ -7,7 +8,11 @@ public sealed class JsonIronBlockSerializer : IIronBlockSerializer
 {
     private static readonly JsonSerializerOptions _options = new JsonSerializerOptions()
     {
-        WriteIndented = false
+        WriteIndented = false,
+        Converters =
+        {
+            new KeyDerivationParametersJsonConverter()
+        }
     };
     public byte[] Serialize<T>(T value)
     {

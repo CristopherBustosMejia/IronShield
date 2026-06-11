@@ -55,12 +55,12 @@ public sealed class JsonIronBlockSerializerTests
         {
             EncryptionAlgorithm = "AES-256-GCM",
 
-            KeyDerivationAlgorithm = "Argon2id",
-
-            Parameters = new Dictionary<string, string>
+            KeyderivationParameters = new Argon2idParameters
             {
-                ["Memory"] = "65536",
-                ["Iterations"] = "4"
+                MemorySizeKb = 65536,
+                Iterations = 4,
+                Parallelism = 2,
+                KeySize = 32
             }
         };
 
