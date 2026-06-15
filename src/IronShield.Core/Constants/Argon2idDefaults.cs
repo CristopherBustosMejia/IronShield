@@ -1,4 +1,4 @@
-namespace IronShield.Cryptography.Constants;
+namespace IronShield.Core.Constants;
 
 public static class Argon2idDefaults
 {

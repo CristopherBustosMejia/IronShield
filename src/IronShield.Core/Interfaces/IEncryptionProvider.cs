@@ -4,6 +4,6 @@ namespace IronShield.Core.Interfaces;
 
 public interface IEncryptionProvider
 {
-    EncryptedPayload Encrypt(byte[] data, String password);
-    byte[] Decrypt(EncryptedPayload payload, String password);
+    EncryptedPayload Encrypt(byte[] data, byte[] key);
+    byte[] Decrypt(EncryptedPayload payload, byte[] key);
 }
