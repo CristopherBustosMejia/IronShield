@@ -10,6 +10,8 @@ public sealed class AesGcmEncryptionProvider : IEncryptionProvider
 {
     private readonly IRandomProvider _randomProvider;
 
+    public String Algorithm => "AES-256-GCM";
+
     public AesGcmEncryptionProvider(IRandomProvider randomProvider)
     {
         _randomProvider = randomProvider;

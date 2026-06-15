@@ -7,6 +7,7 @@ namespace IronShield.Cryptography.KeyDerivation;
 
 public sealed class Argon2idKeyDerivation : IKeyDerivationProvider
 {
+    public String Algorithm => "Argon2id";
     public byte[] DeriveKey(String password, byte[] salt, IKeyderivationParameters parameters)
     {
         ArgumentNullException.ThrowIfNull(password);

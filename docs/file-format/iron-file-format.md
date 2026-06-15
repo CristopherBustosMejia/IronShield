@@ -278,7 +278,7 @@ The following block identifiers are permanently reserved once defined:
 | 1  | PublicMetadata   |
 | 2  | IntegrityData    |
 | 3  | EncryptionInfo   |
-| 4  | EncryptedPayload |
+| 4  | FileContent      |
 
 These identifiers must never be reused for different purposes.
 

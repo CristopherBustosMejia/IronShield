@@ -8,5 +8,5 @@ public enum IronBlockType : byte
 
     EncryptionInfo = 3,
 
-    EncryptedPayload = 4,
+    FileContent = 4,
 }
