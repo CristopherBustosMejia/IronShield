@@ -55,8 +55,9 @@ public sealed class JsonIronBlockSerializerTests
         {
             EncryptionAlgorithm = "AES-256-GCM",
 
-            KeyderivationParameters = new Argon2idParameters
+            KeyDerivationParameters = new Argon2idParameters
             {
+                Salt = [1],
                 MemorySizeKb = 65536,
                 Iterations = 4,
                 Parallelism = 2,

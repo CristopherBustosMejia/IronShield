@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\IronShield.Storage\IronShield.Storage.csproj" />
+    <ProjectReference Include="..\..\src\IronShield.Cryptography\IronShield.Cryptography.csproj" />
   </ItemGroup>
 
 </Project>

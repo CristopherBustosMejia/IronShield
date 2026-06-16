@@ -24,7 +24,7 @@ public sealed class IronContainerReaderTest
                 },
                 new IronBlock
                 {
-                    Type = IronBlockType.EncryptedPayload,
+                    Type = IronBlockType.FileContent,
                     IsEncrypted = true,
                     Data = [4, 5, 6]
                 }

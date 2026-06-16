@@ -1,5 +1,5 @@
 namespace IronShield.Core.Interfaces;
-public interface IKeyderivationParameters
+public interface IKeyDerivationParameters
 {
     String Algorithm { get; }
 }

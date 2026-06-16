@@ -5,13 +5,18 @@ using IronShield.Core.Interfaces;
 
 namespace IronShield.Cryptography.KeyDerivation;
 
-public sealed class Argon2idKeyDerivation : IKeyDerivationProvider
+public sealed class Argon2idKeyDerivationProvider : IKeyDerivationProvider
 {
     public String Algorithm => "Argon2id";
-    public byte[] DeriveKey(String password, byte[] salt, IKeyderivationParameters parameters)
+    private readonly IRandomProvider _randomProvider;
+
+    public Argon2idKeyDerivationProvider(IRandomProvider randomProvider)
+    {
+        _randomProvider = randomProvider;
+    }
+    public byte[] DeriveKey(String password, IKeyDerivationParameters parameters)
     {
         ArgumentNullException.ThrowIfNull(password);
-        ArgumentNullException.ThrowIfNull(salt);
         ArgumentNullException.ThrowIfNull(parameters);
 
         if(parameters is not Argon2idParameters argon2IdParameters)
@@ -19,11 +24,22 @@ public sealed class Argon2idKeyDerivation : IKeyDerivationProvider
 
         Argon2id argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
         {
-            Salt = salt,
+            Salt = argon2IdParameters.Salt,
             DegreeOfParallelism = argon2IdParameters.Parallelism,
             Iterations = argon2IdParameters.Iterations,
             MemorySize = argon2IdParameters.MemorySizeKb
         };
         return argon2.GetBytes(argon2IdParameters.KeySize);
+    }
+    public IKeyDerivationParameters CreateParameters()
+    {
+        return new Argon2idParameters
+        {
+            Salt = _randomProvider.GetBytes(32),
+            MemorySizeKb = 65536,
+            Iterations = 4,
+            Parallelism = Environment.ProcessorCount,
+            KeySize = 32
+        };
     }
 }

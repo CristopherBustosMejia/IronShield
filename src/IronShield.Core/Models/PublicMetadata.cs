@@ -1,6 +1,11 @@
+using IronShield.Core.Interfaces;
+using IronShield.Core.Attributes;
+using IronShield.Core.Enums;
+
 namespace IronShield.Core.Models;
 
-public sealed class PublicMetadata
+[IronBlock(IronBlockType.PublicMetadata)]
+public sealed class PublicMetadata : IIronBlockData
 {
     public required String OriginalFileName { get; init; }
     public required long OriginalFileSize { get; init; }

@@ -4,6 +4,5 @@ namespace IronShield.Core.Interfaces;
 
 public interface IIronContainerFactory
 {
-    IIronContainerFactory Create(byte[] data, String originalFileName,
-        String password, AuthorInfo authorInfo);
+    IronContainer Create(byte version, IReadOnlyCollection<IIronBlockData> data, IronCryptographyContext cryptographyContext);
 }

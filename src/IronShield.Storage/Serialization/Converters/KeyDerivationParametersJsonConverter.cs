@@ -5,9 +5,9 @@ using IronShield.Core.Interfaces;
 
 namespace IronShield.Storage.Serialization.Converters;
 
-public sealed class KeyDerivationParametersJsonConverter : JsonConverter<IKeyderivationParameters>
+public sealed class KeyDerivationParametersJsonConverter : JsonConverter<IKeyDerivationParameters>
 {
-    public override IKeyderivationParameters? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override IKeyDerivationParameters? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using JsonDocument document = JsonDocument.ParseValue(ref reader);
         
@@ -24,7 +24,7 @@ public sealed class KeyDerivationParametersJsonConverter : JsonConverter<IKeyder
             _ => throw new JsonException($"Unsupported key derivation algorithm '{algorithm}'")
         };
     }
-    public override void Write(Utf8JsonWriter writer, IKeyderivationParameters value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, IKeyDerivationParameters value, JsonSerializerOptions options)
     {
         JsonSerializer.Serialize(writer,(object)value,value.GetType(),options);
     }
