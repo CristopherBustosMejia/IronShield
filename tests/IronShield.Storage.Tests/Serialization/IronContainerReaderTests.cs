@@ -100,4 +100,35 @@ public sealed class IronContainerReaderTest
 
         action.Should().Throw<InvalidDataException>();
     }
+
+    [Fact]
+    public void Should_Skip_Unknown_Block_Type()
+    {
+        byte[] bytes =
+        [
+            (byte)'I',
+            (byte)'R',
+            (byte)'O',
+            (byte)'N',
+            1,
+            2,0,0,0,
+            99,
+            0,
+            3,0,0,0,
+            1,2,3,
+            (byte)IronBlockType.PublicMetadata,
+            0,
+            2,0,0,0,
+            4,5
+        ];
+
+        IronContainerReader reader = new();
+        using MemoryStream stream = new(bytes);
+
+        IronContainer result = reader.Read(stream);
+
+        result.Blocks.Should().HaveCount(1);
+        result.Blocks.Single().Type.Should().Be(IronBlockType.PublicMetadata);
+        result.Blocks.Single().Data.Should().BeEquivalentTo(new byte[] { 4, 5 });
+    }
 }

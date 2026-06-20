@@ -12,7 +12,7 @@ public sealed class IronContainerReader : IIronContainerReader
     {
         ArgumentNullException.ThrowIfNull(stream);
 
-        using BinaryReader reader = new BinaryReader(stream,Encoding.UTF8,true);
+        using BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, true);
 
         ValidateMagic(reader);
 
@@ -23,9 +23,11 @@ public sealed class IronContainerReader : IIronContainerReader
 
         for (int i = 0; i < blockCount; i++)
         {
-            blocks.Add(ReadBlock(reader));
+            IronBlock? block = ReadBlock(reader);
+            if (block is not null)
+                blocks.Add(block);
         }
-        
+
         return new IronContainer
         {
             Version = version,
@@ -42,20 +44,23 @@ public sealed class IronContainerReader : IIronContainerReader
 
     }
 
-    private IronBlock ReadBlock(BinaryReader reader)
+    private IronBlock? ReadBlock(BinaryReader reader)
     {
-        IronBlockType type = (IronBlockType) reader.ReadByte();
-        bool IsEncrypted = reader.ReadByte() == 1;
+        IronBlockType type = (IronBlockType)reader.ReadByte();
+        bool isEncrypted = reader.ReadByte() == 1;
         int length = reader.ReadInt32();
         byte[] data = reader.ReadBytes(length);
 
-        if(data.Length != length)
+        if (data.Length != length)
             throw new InvalidDataException("Unexpected end of stream.");
+
+        if (!Enum.IsDefined(typeof(IronBlockType), type))
+            return null;
 
         return new IronBlock
         {
             Type = type,
-            IsEncrypted = IsEncrypted,
+            IsEncrypted = isEncrypted,
             Data = data
         };
     }

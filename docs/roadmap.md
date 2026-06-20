@@ -11,12 +11,17 @@
 * [x] Implementar serialización JSON de bloques.
 * [x] Implementar SHA-256.
 * [x] Implementar Argon2id.
-* [ ] Implementar AES-256-GCM.
+* [x] Implementar AES-256-GCM.
 
 ## Phase 2 - Core Services
 
-* [ ] Servicio de creación de contenedores.
-* [ ] Servicio de apertura de contenedores.
+* [x] Abstracción de fuentes de datos (`IDataSource`, `IDataCollector`).
+* [x] Proveedores de origen: archivo, directorio, comprimido.
+* [x] Colector de datos para construcción de bloques.
+* [x] Servicios de Protection / Unprotection separados (`IronProtectionService`, `IronUnprotectionService`).
+* [x] Fachada `IronShieldService` que compone ambos.
+* [x] Pipeline Protect completo (datos → .iron cifrado).
+* [x] Pipeline Unprotect completo (.iron → datos descifrados).
 * [ ] Servicio de verificación de integridad.
 * [ ] Gestión de errores y excepciones.
 
