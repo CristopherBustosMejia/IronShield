@@ -1,67 +1,63 @@
-# IronShield Documentation
+# IronShield
 
-## Overview
+IronShield es una herramienta CLI multiplataforma para proteger archivos sensibles mediante criptografía moderna (AES-256-GCM + Argon2id + SHA-256) y un formato de archivo propio extensible (`.iron`).
 
-IronShield es una herramienta multiplataforma desarrollada en C# y .NET con el objetivo de proteger archivos sensibles mediante criptografía moderna y un formato de archivo propio, extensible y preparado para evolucionar sin romper compatibilidad.
+## Estado
 
-El proyecto está siendo desarrollado con una filosofía de arquitectura limpia, responsabilidades bien definidas y evitando deuda técnica temprana.
+MVP funcional. 95 tests pasando. Listo para pruebas externas.
 
-## Objetivos del proyecto
+## Uso rápido
 
-* Proteger archivos sensibles (`.env`, secretos, configuraciones, certificados, etc.).
-* Compartir archivos de manera segura a través de Internet.
-* Proporcionar una interfaz CLI moderna basada en `Spectre.Console.Cli`.
-* Incorporar una interfaz gráfica con Avalonia UI en etapas posteriores.
-* Mantener una arquitectura profesional apta para portafolio.
+```bash
+# Proteger un archivo
+dotnet run --project src/IronShield.Cli -- protect documento.pdf -p "miclave" -o documento.pdf.iron
 
-## Filosofía de diseño
+# Proteger un directorio (se comprime a ZIP internamente)
+dotnet run --project src/IronShield.Cli -- protect ./carpeta -p "miclave" -o carpeta.iron
 
-* No existe una versión heredada que mantener.
-* El formato actual es la base oficial del proyecto.
-* Las nuevas características deben agregarse sin romper las anteriores.
-* Los modelos representan datos.
-* Los servicios realizan operaciones.
-* Las factorías construyen objetos.
-* No se crean capas o mappers innecesarios.
-* Se prioriza la mantenibilidad sobre la velocidad de desarrollo.
+# Restaurar
+dotnet run --project src/IronShield.Cli -- unprotect carpeta.iron -p "miclave" -o carpeta.zip
+```
 
-## Estado actual
+## Comandos CLI
 
-### Implementado
+| Comando | Descripción |
+|---|---|
+| `protect <path>` | Cifra un archivo o directorio |
+| `unprotect <path>` | Descifra un archivo `.iron` |
 
-* Estructura de la solución.
-* Modelos principales del dominio.
-* Especificación del formato `.iron`.
-* Sistema de bloques (`IronContainer` / `IronBlock`).
-* Lectura y escritura del contenedor binario.
-* Serialización JSON de bloques.
-* Conversores JSON personalizados para tipos polimórficos.
-* SHA-256.
-* Argon2id.
-* AES-256-GCM.
-* Abstracción de fuentes de datos (`IDataSource`, `IDataCollector`).
-* Proveedores de origen: archivo, directorio (ZIP), comprimido (GZip).
-* Cobertura inicial de pruebas unitarias.
+### Opciones compartidas
 
-### En desarrollo
+| Flag | Descripción |
+|---|---|
+| `-o, --output` | Ruta de salida |
+| `-p, --password` | Contraseña (omitir para modo interactivo) |
+| `--overwrite` | Sobrescribir archivo existente |
 
-* Colector de datos integrado con flujo de cifrado.
-* CLI (comandos `create`, `extract`, `info`, `verify`).
-* Interfaz gráfica (Avalonia UI).
+## Documentación
 
-## Índice de documentación
+La documentación completa está en [`docs/`](docs/):
 
-* `vision-and-goals.md`
-* `architecture.md`
-* `project-context.md`
-* `file-format/iron-file-format.md`
-* `file-format/block-system.md`
-* `cryptography/cryptography-overview.md`
-* `cryptography/hashing.md`
-* `cryptography/key-derivation.md`
-* `development/serialization.md`
-* `development/coding-guidelines.md`
-* `development/testing-strategy.md`
-* `roadmap.md`
+- [`docs/arquitecture.md`](docs/arquitecture.md)
+- [`docs/roadmap.md`](docs/roadmap.md)
+- [`docs/project-context.md`](docs/project-context.md)
+- [`docs/file-format/`](docs/file-format/)
+- [`docs/cryptography/`](docs/cryptography/)
+- [`docs/development/testing-guide.md`](docs/development/testing-guide.md)
 
----
+## Requisitos
+
+- .NET 10 SDK
+- Linux, macOS o Windows
+
+## Tests automatizados
+
+```bash
+dotnet test
+```
+
+## Smoke test manual
+
+```bash
+bash tests/CLI/test-scenarios.sh
+```

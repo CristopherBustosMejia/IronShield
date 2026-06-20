@@ -15,22 +15,28 @@
 
 ## Phase 2 - Core Services
 
-* [x] Abstracción de fuentes de datos (`IDataSource`, `IDataCollector`).
-* [x] Proveedores de origen: archivo, directorio, comprimido.
-* [x] Colector de datos para construcción de bloques.
-* [x] Servicios de Protection / Unprotection separados (`IronProtectionService`, `IronUnprotectionService`).
+* [x] Abstracción de fuentes de datos (`IDataSource`, `IIronBlockDataFactory`).
+* [x] Proveedores de origen: archivo, directorio (ZIP embebido), comprimido (GZip).
+* [x] Factoría de datos para construcción de bloques.
+* [x] Servicios de Protection / Unprotection separados.
 * [x] Fachada `IronShieldService` que compone ambos.
-* [x] Pipeline Protect completo (datos → .iron cifrado).
-* [x] Pipeline Unprotect completo (.iron → datos descifrados).
+* [x] Pipeline Protect completo (datos → `.iron` cifrado).
+* [x] Pipeline Unprotect completo (`.iron` → datos descifrados).
 * [ ] Servicio de verificación de integridad.
-* [ ] Gestión de errores y excepciones.
+* [ ] Gestión de errores y excepciones unificada.
 
-## Phase 3 - CLI
+## Phase 3 - CLI ✅
 
-* [ ] Comando `create`.
-* [ ] Comando `extract`.
-* [ ] Comando `info`.
-* [ ] Comando `verify`.
+* [x] Comando `protect` (soporta archivos y directorios).
+* [x] Comando `unprotect` (restaura archivos y directorios a ZIP).
+* [x] Sistema.CommandLine 2.0.9 + Spectre.Console.
+* [x] Output moderno con spinners, colores, errores user-friendly.
+* [x] Password oculta en modo interactivo.
+* [x] 8 tests de CLI (unit + integración end-to-end).
+* [x] Smoke test script para testers (`tests/CLI/test-scenarios.sh`).
+* [ ] Comando `inspect` (metadatos sin descifrar).
+* [ ] Comando `version` semántico.
+* [ ] Logging / auditoría.
 
 ## Phase 4 - Secure Sharing
 

@@ -4,28 +4,28 @@ Este documento resume el estado arquitectónico actual del proyecto y sirve como
 
 ## Tecnologías
 
-* Lenguaje: C#
+* Lenguaje: C# (preview LangVersion)
 * Framework: .NET 10
-* IDE principal: Visual Studio Code
-* Plataforma principal de desarrollo: Linux
-* Framework de pruebas: xUnit
-* Assertions: FluentAssertions
+* Plataforma: Linux / macOS / Windows
+* Framework de pruebas: xUnit + FluentAssertions
+* CLI: System.CommandLine 2.0.9 + Spectre.Console 0.49.1
 
 ## Solución
 
 ```text
-IronShield.sln
+IronShield.slnx
 
 src/
-├── IronShield.Core
-├── IronShield.Cryptography
-├── IronShield.Storage
-└── IronShield.Cli
+├── IronShield.Core            # Interfaces, modelos, perfiles, enumeraciones
+├── IronShield.Cryptography    # Proveedores reales (SHA-256, AES-GCM, Argon2id)
+├── IronShield.Storage         # Implementación: servicios, serialización, fuentes
+└── IronShield.Cli             # CLI (System.CommandLine + Spectre.Console)
 
 tests/
-├── IronShield.Core.Tests
-├── IronShield.Cryptography.Tests
-└── IronShield.Storage.Tests
+├── IronShield.Core.Tests          # Placeholder (0 tests)
+├── IronShield.Cryptography.Tests  # 18 tests
+├── IronShield.Storage.Tests       # 69 tests
+└── IronShield.Cli.Tests           # 8 tests (unit + integración)
 ```
 
 ## Principales decisiones ya tomadas
@@ -36,78 +36,78 @@ tests/
 * Argon2id para derivación de claves.
 * SHA-256 para integridad inicial.
 * Serialización JSON para los datos internos de los bloques.
-* El proyecto controla explícitamente la serialización polimórfica.
-* No se utilizan discriminadores automáticos como `$type`.
+* El proyecto controla explícitamente la serialización polimórfica (sin `$type`).
+* `IDataSource` como abstracción de entrada.
+* `IIronBlockDataFactory` (antes `IDataCollector`) construye los bloques desde un `IDataSource`.
+* CLI delega toda la lógica a `IIronShieldService` (sin lógica de negocio en CLI).
+* `DirectoryDataSource` usa ZIP embebido (Caso A); migración futura a bloques estructurados (Caso B) sin breaking changes.
 
 ## Estado del modelo de dominio
 
 ### IronContainer
 
 Contenedor principal del archivo `.iron`. Incluye:
-
 * Versión del formato.
-* Colección de bloques.
+* Colección de bloques (`IronBlock[]`).
 
 ### IronBlock
 
-Representa una unidad autocontenida de información.
+Unidad autocontenida de información con:
+* Tipo de bloque (`IronBlockType`).
+* Indicador de cifrado.
+* Datos serializados (JSON cuando aplica).
 
-Propiedades:
+### Bloques actuales
 
-* Tipo de bloque.
-* Indicador de si el bloque está cifrado.
-* Datos serializados.
+| Tipo | ID | Descripción |
+|---|---|---|
+| `EncryptionInfo` | 1 | Parámetros de cifrado (algoritmo, nonce, etc.) |
+| `PublicMetadata` | 2 | Metadatos visibles (creador, timestamp, nombre original) |
+| `FileContent` | 3 | Contenido cifrado del archivo (o ZIP en directorios) |
+| `IntegrityData` | 4 | Hash del contenido para verificación |
 
-## Capa de obtención de datos
+Los lectores deben **saltar bloques con tipo desconocido** (forward compatibility).
 
-Se introdujo una capa abstracta para obtener datos desde distintos orígenes.
+## Capa de servicios
 
 ### Interfaces (Core)
 
-* `IDataSource` — representa cualquier origen de datos (nombre, tamaño, stream de lectura).
-* `IIronBlockDataFactory` — factoría que construye `IIronBlockData[]` (metadata, contenido e integridad) desde un `IDataSource`.
-* `IIronProtectionService` — servicio de protección (datos → `.iron` cifrado).
-* `IIronUnprotectionService` — servicio de desprotección (`.iron` → datos originales).
-* `IIronShieldService` — fachada que unifica Protection + Unprotection.
+* `IDataSource` — origen de datos (nombre, tamaño, stream de lectura).
+* `IIronBlockDataFactory` — construye `IIronBlockData[]` desde un `IDataSource`.
+* `IHashProvider` — cómputo de hash.
+* `IEncryptionProvider` — cifrado/descifrado.
+* `IKeyDerivationProvider` — derivación de clave desde password.
+* `IIronBlockSerializer` — serialización JSON de bloques.
+* `IIronEncryptionProfile` — parámetros de cifrado (KDF, tamaño de clave, etc.).
+* `IIronProtectionService` — pipeline protect.
+* `IIronUnprotectionService` — pipeline unprotect.
+* `IIronShieldService` — fachada unificada.
 
-### Implementaciones (Storage.Sources)
+### Implementaciones (Storage)
 
-* `FileDataSource` — lee un archivo del sistema de archivos.
-* `DirectoryDataSource` — comprime el directorio completo a un ZIP en memoria. El ZIP viaja como un solo `FileContent` (Caso A: ZIP embebido). Ver sección "Evolución futura" para el Caso B (bloques estructurados).
-* `CompressedDataSource` — decorador que envuelve cualquier `IDataSource` y aplica GZip.
-* `IronBlockDataFactory` — implementa `IIronBlockDataFactory`; lee el `IDataSource`, calcula hash (opcional), construye `PublicMetadata`, `FileContent` e `IntegrityData`.
+* `FileDataSource` — lee un archivo.
+* `DirectoryDataSource` — comprime directorio a ZIP en memoria.
+* `CompressedDataSource` — decorador GZip sobre cualquier `IDataSource`.
+* `IronBlockDataFactory` — construye los bloques desde un `IDataSource`.
+* `IronProtectionService` / `IronUnprotectionService` — pipelines.
+* `IronShieldService` — fachada con constructor de conveniencia (5 primitivos).
 
-### Implementaciones (Storage.Services)
+### CLI
 
-* `IronProtectionService` — implementa `IIronProtectionService` (4 dependencias: `IIronBlockDataFactory`, `IIronCryptographyContextFactory`, `IIronContainerFactory`, `IIronContainerWriter`).
-* `IronUnprotectionService` — implementa `IIronUnprotectionService` (4 dependencias: `IIronContainerReader`, `IIronBlockSerializer`, `IEncryptionProvider`, `IKeyDerivationProvider`).
-* `IronShieldService` — fachada que implementa `IIronShieldService` (2 dependencias: `IIronProtectionService` + `IIronUnprotectionService`). También expone un constructor de conveniencia con los 5 primitivos (`IHashProvider`, `IEncryptionProvider`, `IKeyDerivationProvider`, `IIronBlockSerializer`, `IIronEncryptionProfile`).
+* `ProtectCommand` — `protect <path> [-o] [-p] [--creator] [--overwrite]`.
+* `UnprotectCommand` — `unprotect <path> [-o] [-p] [--overwrite]`.
+* `CliOutputService` — helpers de UX (spinner, colores, errores, password oculta).
+* `DependencyInjection` — composition root que construye `IronShieldService`.
+* `Program.cs` — mínimo: header → parse → invoke.
 
-### Modelos nuevos (Core.Models)
-
-* `UnprotectResult` — resultado de Unprotect: `Data` (bytes originales) + `Metadata` opcional.
-
-### Evolución futura: directorios estructurados (Caso B)
-
-Actualmente `DirectoryDataSource` empaqueta el directorio como un ZIP en un solo `FileContent`. A futuro puede migrarse a bloques individuales por archivo sin romper compatibilidad:
-
-| Paso | Cambio | Impacto |
-|---|---|---|
-| 1 | Agregar `IronBlockType.DirectoryEntry = 5` | Nuevo valor enum, no rompe existentes |
-| 2 | Agregar `DirectoryEntry : IIronBlockData` con `RelativePath`, `Content`, `LastWriteUtc` | Nuevo modelo, no afecta otros |
-| 3 | Modificar `IronBlockDataFactory.Create()` para directorios: emitir N `DirectoryEntry` en vez de ZIP | Solo cambia la factoría |
-| 4 | `IronUnprotectionService` lee y reconstruye estructura | Nuevo switch case |
-
-Los `.iron` existentes (con ZIP en `FileContent`) seguirán siendo legibles. Los archivos nuevos con `DirectoryEntry` serán ignorados por lectores antiguos (forward compatibility por diseño).
-
-### Flujo completo
+## Flujo completo
 
 ```text
 == Protect ==
 
-IDataSource (FileDataSource / DirectoryDataSource / CompressedDataSource)
+IDataSource (FileDataSource / DirectoryDataSource)
     ↓
-IDataCollector.Collect(source)
+IIronBlockDataFactory.Create(source)
     ↓
 IIronBlockData[]  →  IronCryptographyContextFactory.Create(password)
                     ↓
@@ -130,8 +130,42 @@ para cada bloque: descifrar si es necesario → deserializar
 UnprotectResult { Data, Metadata }
 ```
 
+## CLI commands
+
+```bash
+# Proteger un archivo
+dotnet run --project src/IronShield.Cli -- protect documento.pdf -p "clave" -o documento.pdf.iron
+
+# Proteger un directorio
+dotnet run --project src/IronShield.Cli -- protect ./carpeta -p "clave" -o carpeta.iron
+
+# Restaurar
+dotnet run --project src/IronShield.Cli -- unprotect archivo.iron -p "clave" -o restaurado
+```
+
+## Evolución futura: directorios estructurados (Caso B)
+
+Actualmente `DirectoryDataSource` empaqueta el directorio como un ZIP en un solo `FileContent`. A futuro puede migrarse a bloques individuales por archivo sin romper compatibilidad:
+
+| Paso | Cambio | Impacto |
+|---|---|---|
+| 1 | Agregar `IronBlockType.DirectoryEntry = 5` | Nuevo valor enum, no rompe existentes |
+| 2 | Agregar `DirectoryEntry : IIronBlockData` con `RelativePath`, `Content`, `LastWriteUtc` | Nuevo modelo |
+| 3 | Modificar `IronBlockDataFactory.Create()` para emitir N `DirectoryEntry` | Solo cambia la factoría |
+| 4 | `IronUnprotectionService` reconstruye estructura desde entries | Nuevo case |
+
+Los `.iron` legacy con ZIP embebido seguirán siendo legibles. Los nuevos con `DirectoryEntry` serán ignorados por lectores antiguos.
+
+## Decisiones de arquitectura recientes
+
+* CLI usa `System.CommandLine 2.0.9` (stable, API con `SetAction` + `ParseResult.GetValue<T>`).
+* `CliOutputService.RunSafe()` captura `AuthenticationTagMismatchException` para mostrar "Incorrect password" sin stack trace.
+* Las pruebas de CLI usan `[Collection("CLI")]` con paralelización desactivada por conflicto de `AnsiConsole.Status()`.
+* `InternalsVisibleTo` desde `IronShield.Cli` hacia `IronShield.Cli.Tests`.
+* Project reference desde CLI hacia `IronShield.Core`, `IronShield.Cryptography`, `IronShield.Storage`.
+
 ## Próximo objetivo técnico
 
-Desarrollar la CLI (comandos `create`, `extract`, `info`, `verify`) utilizando el orquestador `IronShieldService`.
-
-Este documento debe mantenerse actualizado después de cada decisión arquitectónica importante.
+* Comando `inspect` para leer metadatos públicos sin descifrar.
+* CI/CD pipeline (GitHub Actions).
+* Benchmark de rendimiento para archivos grandes.

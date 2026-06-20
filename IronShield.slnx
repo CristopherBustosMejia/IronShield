@@ -9,5 +9,6 @@
     <Project Path="tests/IronShield.Core.Tests/IronShield.Core.Tests.csproj" />
     <Project Path="tests/IronShield.Cryptography.Tests/IronShield.Cryptography.Tests.csproj" />
     <Project Path="tests/IronShield.Storage.Tests/IronShield.Storage.Tests.csproj" />
+    <Project Path="tests/IronShield.Cli.Tests/IronShield.Cli.Tests.csproj" />
   </Folder>
 </Solution>
