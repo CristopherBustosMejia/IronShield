@@ -36,16 +36,18 @@ El proyecto está siendo desarrollado con una filosofía de arquitectura limpia,
 * Lectura y escritura del contenedor binario.
 * Serialización JSON de bloques.
 * Conversores JSON personalizados para tipos polimórficos.
-* Implementación de SHA-256.
+* SHA-256.
+* Argon2id.
+* AES-256-GCM.
+* Abstracción de fuentes de datos (`IDataSource`, `IDataCollector`).
+* Proveedores de origen: archivo, directorio (ZIP), comprimido (GZip).
 * Cobertura inicial de pruebas unitarias.
 
 ### En desarrollo
 
-* Argon2id.
-* AES-256-GCM.
-* Servicios de alto nivel de cifrado.
-* CLI.
-* Interfaz gráfica.
+* Colector de datos integrado con flujo de cifrado.
+* CLI (comandos `create`, `extract`, `info`, `verify`).
+* Interfaz gráfica (Avalonia UI).
 
 ## Índice de documentación
 

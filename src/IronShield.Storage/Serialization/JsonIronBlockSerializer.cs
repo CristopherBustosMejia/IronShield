@@ -16,7 +16,7 @@ public sealed class JsonIronBlockSerializer : IIronBlockSerializer
     };
     public byte[] Serialize<T>(T value)
     {
-        return JsonSerializer.SerializeToUtf8Bytes(value,_options);
+        return JsonSerializer.SerializeToUtf8Bytes(value, value?.GetType() ?? typeof(T), _options);
     }
     public T Deserialize<T>(byte[] data)
     {
