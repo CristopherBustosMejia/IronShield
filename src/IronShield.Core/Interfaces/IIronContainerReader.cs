@@ -2,7 +2,7 @@ using IronShield.Core.Models;
 
 namespace IronShield.Core.Interfaces;
 
-public interface IIronContainerWriter
+public interface IIronContainerReader
 {
-    void Write(IronContainer container, Stream stream);   
+    IronContainer Read(Stream stream);   
 }

@@ -22,11 +22,11 @@ public sealed class AesGcmEncryptionProvider : IEncryptionProvider
         ArgumentNullException.ThrowIfNull(data);
         ArgumentNullException.ThrowIfNull(key);
 
-        byte[] nonce = _randomProvider.GetBytes(CryptographyConstans.AesGcmNonceSize);
+        byte[] nonce = _randomProvider.GetBytes(CryptographyConstants.AesGcmNonceSize);
         byte[] cipherText = new byte[data.Length];
-        byte[] tag = new byte[CryptographyConstans.AesGcmTagSize];
+        byte[] tag = new byte[CryptographyConstants.AesGcmTagSize];
 
-        using AesGcm aes = new AesGcm(key,CryptographyConstans.AesGcmTagSize);
+        using AesGcm aes = new AesGcm(key,CryptographyConstants.AesGcmTagSize);
 
         aes.Encrypt(nonce,data,cipherText,tag);
 
@@ -58,7 +58,7 @@ public sealed class AesGcmEncryptionProvider : IEncryptionProvider
         byte[] tag = payload.Parameters.GetRequiredValue(EncryptionParameterNames.Tag);
         byte[] plainText = new byte[payload.CipherText.Length];
 
-        using AesGcm aes = new AesGcm(key, CryptographyConstans.AesGcmTagSize);
+        using AesGcm aes = new AesGcm(key, CryptographyConstants.AesGcmTagSize);
 
         aes.Decrypt(nonce,payload.CipherText,tag,plainText);
 

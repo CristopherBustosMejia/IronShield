@@ -1,6 +1,6 @@
 namespace IronShield.Core.Constants;
 
-public static class CryptographyConstans
+public static class CryptographyConstants
 {
     public const int Aes256KeySize = 32;
     public const int AesGcmNonceSize = 12;

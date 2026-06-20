@@ -1,5 +1,6 @@
 using IronShield.Core.Interfaces;
 
+namespace IronShield.Core.Models;
 public sealed class Argon2idParameters : IKeyDerivationParameters
 {
     public String Algorithm => "Argon2id";

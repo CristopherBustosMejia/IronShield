@@ -13,10 +13,10 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Encrypt_And_Decrypt_Data()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
         IRandomProvider randomProvider = new DeterministProvider(
-            Enumerable.Repeat((byte)2, CryptographyConstans.AesGcmNonceSize).ToArray());
+            Enumerable.Repeat((byte)2, CryptographyConstants.AesGcmNonceSize).ToArray());
 
         IEncryptionProvider encryptionProvider = new AesGcmEncryptionProvider(randomProvider);
 
@@ -30,10 +30,10 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Generate_Different_CipherText()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
         IRandomProvider randomProvider = new DeterministProvider(
-            Enumerable.Repeat((byte)2, CryptographyConstans.AesGcmNonceSize).ToArray());
+            Enumerable.Repeat((byte)2, CryptographyConstants.AesGcmNonceSize).ToArray());
 
         IEncryptionProvider encryptionProvider = new AesGcmEncryptionProvider(randomProvider);
 
@@ -45,9 +45,9 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Store_Nonce_Parameter()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
-        byte[] nonce = Enumerable.Repeat((byte)2, CryptographyConstans.AesGcmNonceSize).ToArray();
+        byte[] nonce = Enumerable.Repeat((byte)2, CryptographyConstants.AesGcmNonceSize).ToArray();
 
         IRandomProvider randomProvider = new DeterministProvider(nonce);
 
@@ -63,9 +63,9 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Store_Tag_Parameter()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
-        byte[] nonce = Enumerable.Repeat((byte)2, CryptographyConstans.AesGcmNonceSize).ToArray();
+        byte[] nonce = Enumerable.Repeat((byte)2, CryptographyConstants.AesGcmNonceSize).ToArray();
 
         IRandomProvider randomProvider = new DeterministProvider(nonce);
 
@@ -75,13 +75,13 @@ public sealed class AesGcmEncryptionProviderTest
 
         EncryptionParameter parameter = payload.Parameters.Single(p => p.Name == EncryptionParameterNames.Tag);
 
-        parameter.Value.Should().HaveCount(CryptographyConstans.AesGcmTagSize);
+        parameter.Value.Should().HaveCount(CryptographyConstants.AesGcmTagSize);
     }
 
     [Fact]
     public void Should_Throw_When_Nonce_Is_Missing()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
 
         EncryptedPayload payload = new EncryptedPayload()
@@ -92,12 +92,12 @@ public sealed class AesGcmEncryptionProviderTest
                 new EncryptionParameter
                 {
                     Name = EncryptionParameterNames.Tag,
-                    Value = new byte[CryptographyConstans.AesGcmTagSize]
+                    Value = new byte[CryptographyConstants.AesGcmTagSize]
                 }
             ]
         };
 
-        IRandomProvider randomProvider = new DeterministProvider(new byte[CryptographyConstans.AesGcmNonceSize]);
+        IRandomProvider randomProvider = new DeterministProvider(new byte[CryptographyConstants.AesGcmNonceSize]);
 
         IEncryptionProvider encryptionProvider = new AesGcmEncryptionProvider(randomProvider);
 
@@ -109,7 +109,7 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Throw_When_Tag_Is_Missing()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
 
         EncryptedPayload payload = new EncryptedPayload()
@@ -120,12 +120,12 @@ public sealed class AesGcmEncryptionProviderTest
                 new EncryptionParameter
                 {
                     Name = EncryptionParameterNames.Nonce,
-                    Value = new byte[CryptographyConstans.AesGcmNonceSize]
+                    Value = new byte[CryptographyConstants.AesGcmNonceSize]
                 }
             ]
         };
 
-        IRandomProvider randomProvider = new DeterministProvider(new byte[CryptographyConstans.AesGcmNonceSize]);
+        IRandomProvider randomProvider = new DeterministProvider(new byte[CryptographyConstants.AesGcmNonceSize]);
 
         IEncryptionProvider encryptionProvider = new AesGcmEncryptionProvider(randomProvider);
 
@@ -137,10 +137,10 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Throw_When_CipherText_Is_Modified()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
         IRandomProvider randomProvider = new DeterministProvider(
-            Enumerable.Repeat((byte)2, CryptographyConstans.AesGcmNonceSize).ToArray());
+            Enumerable.Repeat((byte)2, CryptographyConstants.AesGcmNonceSize).ToArray());
 
         IEncryptionProvider encryptionProvider = new AesGcmEncryptionProvider(randomProvider);
 
@@ -156,11 +156,11 @@ public sealed class AesGcmEncryptionProviderTest
     [Fact]
     public void Should_Throw_When_Key_Is_Invalid()
     {
-        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstans.Aes256KeySize).ToArray();
-        byte[] invalidKey = Enumerable.Repeat((byte)2, CryptographyConstans.Aes256KeySize).ToArray();
+        byte[] key = Enumerable.Repeat((byte)1, CryptographyConstants.Aes256KeySize).ToArray();
+        byte[] invalidKey = Enumerable.Repeat((byte)2, CryptographyConstants.Aes256KeySize).ToArray();
         byte[] data = Encoding.UTF8.GetBytes("IronShield Secrets");
         IRandomProvider randomProvider = new DeterministProvider(
-            Enumerable.Repeat((byte)2, CryptographyConstans.AesGcmNonceSize).ToArray());
+            Enumerable.Repeat((byte)2, CryptographyConstants.AesGcmNonceSize).ToArray());
 
         IEncryptionProvider encryptionProvider = new AesGcmEncryptionProvider(randomProvider);
 

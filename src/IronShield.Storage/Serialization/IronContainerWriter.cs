@@ -10,7 +10,7 @@ public sealed class IronContainerWriter : IIronContainerWriter
     public void Write(IronContainer container, Stream stream)
     {
         ArgumentNullException.ThrowIfNull(container);
-        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(stream);
 
         using BinaryWriter writer = new BinaryWriter(stream, Encoding.UTF8, true);
 

@@ -1,5 +1,6 @@
 using FluentAssertions;
 using IronShield.Core.Interfaces;
+using IronShield.Core.Models;
 using IronShield.Cryptography.KeyDerivation;
 
 namespace IronShield.Cryptography.Tests;
