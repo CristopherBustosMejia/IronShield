@@ -227,6 +227,16 @@ Encrypt (optional)
 Block Data
 ```
 
+Block payloads use a compact binary encoding (little-endian). Strings and byte arrays are length-prefixed with an `Int32`. This keeps block sizes small by avoiding JSON markup and base64 expansion.
+
+The first payload byte of `EncryptionInfo` is a discriminator for the key derivation parameters:
+
+```text
+0x01 = Argon2id
+```
+
+Unknown discriminators must be rejected with an error.
+
 # User Experience Goals
 
 The following command should be possible without a password:

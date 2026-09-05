@@ -35,7 +35,7 @@ tests/
 * AES-256-GCM para cifrado.
 * Argon2id para derivación de claves.
 * SHA-256 para integridad inicial.
-* Serialización JSON para los datos internos de los bloques.
+* Serialización binaria para los datos internos de los bloques.
 * El proyecto controla explícitamente la serialización polimórfica (sin `$type`).
 * `IDataSource` como abstracción de entrada.
 * `IIronBlockDataFactory` (antes `IDataCollector`) construye los bloques desde un `IDataSource`.
@@ -55,7 +55,7 @@ Contenedor principal del archivo `.iron`. Incluye:
 Unidad autocontenida de información con:
 * Tipo de bloque (`IronBlockType`).
 * Indicador de cifrado.
-* Datos serializados (JSON cuando aplica).
+* Datos serializados en binario.
 
 ### Bloques actuales
 
@@ -77,7 +77,7 @@ Los lectores deben **saltar bloques con tipo desconocido** (forward compatibilit
 * `IHashProvider` — cómputo de hash.
 * `IEncryptionProvider` — cifrado/descifrado.
 * `IKeyDerivationProvider` — derivación de clave desde password.
-* `IIronBlockSerializer` — serialización JSON de bloques.
+* `IIronBlockSerializer` — serialización binaria de bloques.
 * `IIronEncryptionProfile` — parámetros de cifrado (KDF, tamaño de clave, etc.).
 * `IIronProtectionService` — pipeline protect.
 * `IIronUnprotectionService` — pipeline unprotect.

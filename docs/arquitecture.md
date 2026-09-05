@@ -53,7 +53,7 @@ Responsabilidades:
 * Lectura del contenedor.
 * Escritura del contenedor.
 * Serialización de bloques.
-* Conversores JSON personalizados.
+* Serialización binaria de bloques.
 * Abstracción de fuentes de datos (`IDataSource`).
 * Proveedores de origen: archivos, directorios (ZIP embebido), streams comprimidos.
 * Factoría de bloques `IronBlockDataFactory` (lee fuente, construye metadata + contenido + integridad).

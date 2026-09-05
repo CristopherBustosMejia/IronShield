@@ -24,7 +24,7 @@ public sealed class IronShieldServiceTests
             new Sha256HashProvider(),
             new AesGcmEncryptionProvider(random),
             new Argon2idKeyDerivationProvider(random),
-            new JsonIronBlockSerializer(),
+            new BinaryIronBlockSerializer(),
             new DefaultIronEncryptionProfile());
     }
 

@@ -8,7 +8,7 @@
 * [x] Implementar sistema de bloques.
 * [x] Implementar IronContainerReader.
 * [x] Implementar IronContainerWriter.
-* [x] Implementar serialización JSON de bloques.
+* [x] Implementar serialización binaria de bloques.
 * [x] Implementar SHA-256.
 * [x] Implementar Argon2id.
 * [x] Implementar AES-256-GCM.

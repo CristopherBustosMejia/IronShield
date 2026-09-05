@@ -24,7 +24,7 @@ public sealed class IronUnprotectionServiceTests
         var random = new SecureRandomProvider();
         var encryptionProvider = new AesGcmEncryptionProvider(random);
         var keyDerivationProvider = new Argon2idKeyDerivationProvider(random);
-        var serializer = new JsonIronBlockSerializer();
+        var serializer = new BinaryIronBlockSerializer();
 
         _service = new IronUnprotectionService(
             new IronContainerReader(),

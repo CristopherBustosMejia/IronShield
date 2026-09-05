@@ -15,7 +15,7 @@ Garantizar la estabilidad del formato `.iron` y del comportamiento de los compon
 * Serialización.
 * Lectura y escritura de contenedores.
 * Algoritmos criptográficos.
-* Conversores JSON personalizados.
+* Serialización binaria de bloques.
 * Fuentes de datos (`FileDataSource`, `DirectoryDataSource`, `CompressedDataSource`).
 * Colector de datos (`DataCollector`).
 * Orquestador (`IronShieldService`): test de integración Protect + Unprotect round-trip.

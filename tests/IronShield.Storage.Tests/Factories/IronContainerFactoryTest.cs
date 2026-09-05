@@ -183,7 +183,7 @@ public sealed class IronContainerFactoryTests
     private static IronContainerFactory CreateFactory()
     {
         return new IronContainerFactory(
-            new JsonIronBlockSerializer(),
+            new BinaryIronBlockSerializer(),
             new AesGcmEncryptionProvider(
                 new SecureRandomProvider()),
             new DefaultIronEncryptionProfile());

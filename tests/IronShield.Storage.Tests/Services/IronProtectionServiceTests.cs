@@ -24,7 +24,7 @@ public sealed class IronProtectionServiceTests
         var hashProvider = new Sha256HashProvider();
         var encryptionProvider = new AesGcmEncryptionProvider(random);
         var keyDerivationProvider = new Argon2idKeyDerivationProvider(random);
-        var serializer = new JsonIronBlockSerializer();
+        var serializer = new BinaryIronBlockSerializer();
 
         _service = new IronProtectionService(
             new IronBlockDataFactory(hashProvider),
