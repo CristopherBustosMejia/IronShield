@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using FluentAssertions;
 using IronShield.Core.Constants;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Interfaces;
 using IronShield.Core.Models;
 using IronShield.Cryptography.Encryption;
@@ -103,7 +104,7 @@ public sealed class AesGcmEncryptionProviderTest
 
         Action action = () => encryptionProvider.Decrypt(payload, key);
 
-        action.Should().Throw<InvalidDataException>().WithMessage("*Nonce*");
+        action.Should().Throw<IronFormatException>().WithMessage("*Nonce*");
     }
 
     [Fact]
@@ -131,7 +132,7 @@ public sealed class AesGcmEncryptionProviderTest
 
         Action action = () => encryptionProvider.Decrypt(payload, key);
 
-        action.Should().Throw<InvalidDataException>().WithMessage("*Tag*");
+        action.Should().Throw<IronFormatException>().WithMessage("*Tag*");
     }
 
     [Fact]

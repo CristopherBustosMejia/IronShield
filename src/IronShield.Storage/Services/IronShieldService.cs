@@ -10,13 +10,16 @@ public sealed class IronShieldService : IIronShieldService
 {
     private readonly IIronProtectionService _protection;
     private readonly IIronUnprotectionService _unprotection;
+    private readonly IIronIntegrityVerificationService _verification;
 
     public IronShieldService(
         IIronProtectionService protection,
-        IIronUnprotectionService unprotection)
+        IIronUnprotectionService unprotection,
+        IIronIntegrityVerificationService verification)
     {
         _protection = protection;
         _unprotection = unprotection;
+        _verification = verification;
     }
 
     public IronShieldService(
@@ -31,6 +34,7 @@ public sealed class IronShieldService : IIronShieldService
             encryptionProvider, keyDerivationProvider);
         var containerFactory = new IronContainerFactory(
             serializer, encryptionProvider, profile);
+        var reader = new IronContainerReader();
 
         _protection = new IronProtectionService(
             blockFactory,
@@ -39,10 +43,17 @@ public sealed class IronShieldService : IIronShieldService
             new IronContainerWriter());
 
         _unprotection = new IronUnprotectionService(
-            new IronContainerReader(),
+            reader,
             serializer,
             encryptionProvider,
             keyDerivationProvider);
+
+        _verification = new IronIntegrityVerificationService(
+            reader,
+            serializer,
+            encryptionProvider,
+            keyDerivationProvider,
+            hashProvider);
     }
 
     public void Protect(IDataSource source, string password, Stream output)
@@ -50,4 +61,7 @@ public sealed class IronShieldService : IIronShieldService
 
     public UnprotectResult Unprotect(Stream input, string password)
         => _unprotection.Unprotect(input, password);
+
+    public IntegrityVerificationResult Verify(Stream input, string password)
+        => _verification.Verify(input, password);
 }

@@ -1,4 +1,5 @@
 using FluentAssertions;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Models;
 using IronShield.Storage.Serialization;
 
@@ -249,6 +250,21 @@ public sealed class BinaryIronBlockSerializerTests
 
         Action action = () => _serializer.Deserialize<FileContent>(truncated);
 
-        action.Should().Throw<InvalidDataException>();
+        action.Should().Throw<IronFormatException>();
+    }
+
+    [Fact]
+    public void Deserialize_Should_Throw_On_Unsupported_KeyDerivation_Algorithm()
+    {
+        byte[] bytes =
+        [
+            0x03, 0x00, 0x00, 0x00,
+            (byte)'A', (byte)'E', (byte)'S',
+            0x99
+        ];
+
+        Action action = () => _serializer.Deserialize<EncryptionInfo>(bytes);
+
+        action.Should().Throw<IronFormatException>();
     }
 }

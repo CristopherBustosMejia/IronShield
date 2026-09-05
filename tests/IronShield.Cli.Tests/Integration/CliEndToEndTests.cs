@@ -71,6 +71,23 @@ public sealed class CliEndToEndTests : IDisposable
     }
 
     [Fact]
+    public async Task Should_Not_Throw_On_Corrupted_Iron_File()
+    {
+        Directory.CreateDirectory(_tempDir);
+
+        String corruptedFile = Path.Combine(_tempDir, "corrupted.iron");
+        File.WriteAllBytes(corruptedFile, "not-an-iron-file!!!"u8.ToArray());
+
+        var unprotectCmd = UnprotectCommand.Create(_service);
+        var unprotectResult = unprotectCmd.Parse(
+            [corruptedFile, "-p", "any", "-o", Path.Combine(_tempDir, "out.txt"), "--overwrite"],
+            new ParserConfiguration());
+
+        var action = async () => await unprotectResult.InvokeAsync(new InvocationConfiguration());
+        await action.Should().NotThrowAsync();
+    }
+
+    [Fact]
     public async Task Should_Protect_And_Unprotect_Directory()
     {
         Directory.CreateDirectory(_tempDir);

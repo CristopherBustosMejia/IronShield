@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using IronShield.Core.Exceptions;
 using Spectre.Console;
 
 namespace IronShield.Cli.Services;
@@ -90,6 +91,14 @@ internal sealed class CliOutputService
         try
         {
             await action();
+        }
+        catch (IronPasswordException)
+        {
+            output.Error("Incorrect password. Decryption failed.");
+        }
+        catch (IronFormatException exception)
+        {
+            output.Error($"Invalid Iron file: {exception.Message}");
         }
         catch (AuthenticationTagMismatchException)
         {

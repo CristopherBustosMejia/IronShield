@@ -1,8 +1,9 @@
 using System.Text;
-using IronShield.Core.Enums;
-using IronShield.Core.Models;
 using IronShield.Core.Constants;
+using IronShield.Core.Enums;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Interfaces;
+using IronShield.Core.Models;
 
 namespace IronShield.Storage.Serialization;
 
@@ -40,7 +41,7 @@ public sealed class IronContainerReader : IIronContainerReader
         byte[] magic = reader.ReadBytes(IronFileConstants.MagicSize);
 
         if(!magic.SequenceEqual(IronFileConstants.MagicBytes))
-            throw new InvalidDataException("Invalid Iron file signature.");
+            throw new IronFormatException("Invalid Iron file signature.");
 
     }
 
@@ -52,7 +53,7 @@ public sealed class IronContainerReader : IIronContainerReader
         byte[] data = reader.ReadBytes(length);
 
         if (data.Length != length)
-            throw new InvalidDataException("Unexpected end of stream.");
+            throw new IronFormatException("Unexpected end of stream.");
 
         if (!Enum.IsDefined(typeof(IronBlockType), type))
             return null;

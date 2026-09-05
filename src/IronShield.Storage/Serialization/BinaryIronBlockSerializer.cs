@@ -1,4 +1,5 @@
 using System.Text;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Interfaces;
 using IronShield.Core.Models;
 
@@ -175,7 +176,7 @@ public sealed class BinaryIronBlockSerializer : IIronBlockSerializer
                     KeySize = reader.ReadInt32()
                 };
             default:
-                throw new InvalidDataException($"Unsupported key derivation algorithm code '{algorithm}'.");
+                throw new IronFormatException($"Unsupported key derivation algorithm code '{algorithm}'.");
         }
     }
 
@@ -205,7 +206,7 @@ public sealed class BinaryIronBlockSerializer : IIronBlockSerializer
         byte[] bytes = reader.ReadBytes(length);
 
         if (bytes.Length != length)
-            throw new InvalidDataException("Unexpected end of binary data.");
+            throw new IronFormatException("Unexpected end of binary data.");
 
         return Encoding.UTF8.GetString(bytes);
     }
@@ -222,7 +223,7 @@ public sealed class BinaryIronBlockSerializer : IIronBlockSerializer
         byte[] bytes = reader.ReadBytes(length);
 
         if (bytes.Length != length)
-            throw new InvalidDataException("Unexpected end of binary data.");
+            throw new IronFormatException("Unexpected end of binary data.");
 
         return bytes;
     }

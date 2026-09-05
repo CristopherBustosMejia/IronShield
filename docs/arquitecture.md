@@ -14,7 +14,8 @@ IronShield.sln
 └── tests
     ├── IronShield.Core.Tests
     ├── IronShield.Cryptography.Tests
-    └── IronShield.Storage.Tests
+    ├── IronShield.Storage.Tests
+    └── IronShield.Cli.Tests
 ```
 
 ## Responsabilidades
@@ -59,7 +60,8 @@ Responsabilidades:
 * Factoría de bloques `IronBlockDataFactory` (lee fuente, construye metadata + contenido + integridad).
 * Servicio de protección (`IronProtectionService`).
 * Servicio de desprotección (`IronUnprotectionService`).
-* Fachada unificada (`IronShieldService`) que compone ambos.
+* Servicio de verificación de integridad (`IronIntegrityVerificationService`).
+* Fachada unificada (`IronShieldService`) que los compone.
 
 ### IronShield.Cli
 
@@ -107,7 +109,23 @@ Descifrar y deserializar bloques
 UnprotectResult { Data, Metadata }
 ```
 
-La fachada `IronShieldService` encapsula ambos flujos delegando en `IronProtectionService` (Protect) e `IronUnprotectionService` (Unprotect).
+### Verify (.iron → integridad)
+
+```text
+Archivo .iron
+        ↓
+IIronContainerReader.Read(stream)
+        ↓
+Extraer EncryptionInfo → derivar clave
+        ↓
+Descifrar FileContent e IntegrityData
+        ↓
+Recomputar hash y comparar en tiempo constante
+        ↓
+IntegrityVerificationResult { IsAvailable, IsValid, HashAlgorithm }
+```
+
+La fachada `IronShieldService` encapsula los flujos delegando en `IronProtectionService` (Protect), `IronUnprotectionService` (Unprotect) e `IronIntegrityVerificationService` (Verify).
 
 ## Principios arquitectónicos
 

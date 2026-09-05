@@ -65,5 +65,8 @@ public sealed class ProtectCommandTests
         {
             return new UnprotectResult { Data = [] };
         }
+
+        public IntegrityVerificationResult Verify(Stream input, String password)
+            => throw new NotSupportedException();
     }
 }

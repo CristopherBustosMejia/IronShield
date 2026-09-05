@@ -22,17 +22,18 @@
 * [x] Fachada `IronShieldService` que compone ambos.
 * [x] Pipeline Protect completo (datos → `.iron` cifrado).
 * [x] Pipeline Unprotect completo (`.iron` → datos descifrados).
-* [ ] Servicio de verificación de integridad.
-* [ ] Gestión de errores y excepciones unificada.
+* [x] Servicio de verificación de integridad.
+* [x] Gestión de errores y excepciones unificada.
 
 ## Phase 3 - CLI ✅
 
 * [x] Comando `protect` (soporta archivos y directorios).
 * [x] Comando `unprotect` (restaura archivos y directorios a ZIP).
+* [ ] Comando `verify` (verifica la integridad _'mismatched'_)
 * [x] Sistema.CommandLine 2.0.9 + Spectre.Console.
 * [x] Output moderno con spinners, colores, errores user-friendly.
 * [x] Password oculta en modo interactivo.
-* [x] 8 tests de CLI (unit + integración end-to-end).
+* [x] 9 tests de CLI (unit + integración end-to-end).
 * [x] Smoke test script para testers (`tests/CLI/test-scenarios.sh`).
 * [ ] Comando `inspect` (metadatos sin descifrar).
 * [ ] Comando `version` semántico.

@@ -4,7 +4,7 @@ IronShield es una herramienta CLI multiplataforma para proteger archivos sensibl
 
 ## Estado
 
-MVP funcional. 100 tests pasando. Listo para pruebas externas.
+MVP funcional. 116 tests pasando. Listo para pruebas externas.
 
 ## Uso rápido
 

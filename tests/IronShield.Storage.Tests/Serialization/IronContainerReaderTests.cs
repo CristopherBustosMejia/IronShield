@@ -1,7 +1,8 @@
 using FluentAssertions;
-using IronShield.Core.Enums;
-using IronShield.Core.Models;
 using IronShield.Core.Constants;
+using IronShield.Core.Enums;
+using IronShield.Core.Exceptions;
+using IronShield.Core.Models;
 using IronShield.Storage.Serialization;
 
 namespace IronShield.Storage.Tests.Serialization;
@@ -72,7 +73,7 @@ public sealed class IronContainerReaderTest
 
         Action action = () => reader.Read(stream);
 
-        action.Should().Throw<InvalidDataException>();
+        action.Should().Throw<IronFormatException>();
     }
 
     [Fact]
@@ -98,7 +99,7 @@ public sealed class IronContainerReaderTest
 
         Action action = () => reader.Read(stream);
 
-        action.Should().Throw<InvalidDataException>();
+        action.Should().Throw<IronFormatException>();
     }
 
     [Fact]

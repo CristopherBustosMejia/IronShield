@@ -1,12 +1,13 @@
 using FluentAssertions;
 using IronShield.Core.Enums;
+using IronShield.Core.Exceptions;
+using IronShield.Core.Interfaces;
 using IronShield.Core.Models;
+using IronShield.Core.Profiles;
 using IronShield.Cryptography.Encryption;
 using IronShield.Cryptography.Hashing;
 using IronShield.Cryptography.KeyDerivation;
 using IronShield.Cryptography.Random;
-using IronShield.Core.Interfaces;
-using IronShield.Core.Profiles;
 using IronShield.Storage.Serialization;
 using IronShield.Storage.Services;
 
@@ -45,6 +46,38 @@ public sealed class IronShieldServiceTests
     }
 
     [Fact]
+    public void Should_Verify_Roundtrip()
+    {
+        byte[] original = "integrity check data"u8.ToArray();
+        var source = new MemoryDataSource("data.txt", original);
+
+        using var protectedStream = new MemoryStream();
+        _service.Protect(source, "password", protectedStream);
+        protectedStream.Position = 0;
+
+        IntegrityVerificationResult result = _service.Verify(protectedStream, "password");
+
+        result.IsAvailable.Should().BeTrue();
+        result.IsValid.Should().BeTrue();
+        result.HashAlgorithm.Should().Be("SHA-256");
+    }
+
+    [Fact]
+    public void Should_Not_Verify_With_Wrong_Password()
+    {
+        byte[] original = "integrity check data"u8.ToArray();
+        var source = new MemoryDataSource("data.txt", original);
+
+        using var protectedStream = new MemoryStream();
+        _service.Protect(source, "password", protectedStream);
+        protectedStream.Position = 0;
+
+        Action action = () => _service.Verify(protectedStream, "wrong");
+
+        action.Should().Throw<IronPasswordException>();
+    }
+
+    [Fact]
     public void Should_Preserve_Metadata_After_Roundtrip()
     {
         byte[] original = "test data"u8.ToArray();
@@ -74,7 +107,7 @@ public sealed class IronShieldServiceTests
         protectedStream.Position = 0;
         Action action = () => _service.Unprotect(protectedStream, "wrong-password");
 
-        action.Should().Throw<Exception>();
+        action.Should().Throw<IronPasswordException>();
     }
 
     [Fact]
@@ -99,7 +132,19 @@ public sealed class IronShieldServiceTests
         stream.Position = 0;
 
         Action action = () => _service.Unprotect(stream, "any-password");
-        action.Should().Throw<InvalidDataException>();
+        action.Should().Throw<IronFormatException>();
+    }
+
+    [Fact]
+    public void Should_Throw_IronFormatException_On_Invalid_Magic()
+    {
+        byte[] invalid = "BAD!"u8.ToArray();
+
+        using var stream = new MemoryStream(invalid);
+
+        Action action = () => _service.Unprotect(stream, "any-password");
+
+        action.Should().Throw<IronFormatException>();
     }
 
     [Fact]

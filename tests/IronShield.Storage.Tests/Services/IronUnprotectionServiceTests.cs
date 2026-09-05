@@ -1,5 +1,6 @@
 using FluentAssertions;
 using IronShield.Core.Enums;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Interfaces;
 using IronShield.Core.Models;
 using IronShield.Core.Profiles;
@@ -76,7 +77,7 @@ public sealed class IronUnprotectionServiceTests
         protectedStream.Position = 0;
         Action action = () => _service.Unprotect(protectedStream, "wrong");
 
-        action.Should().Throw<Exception>();
+        action.Should().Throw<IronPasswordException>();
     }
 
     [Fact]

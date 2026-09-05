@@ -1,3 +1,4 @@
+using IronShield.Core.Exceptions;
 using IronShield.Core.Models;
 
 namespace IronShield.Cryptography.Extensions;
@@ -8,6 +9,6 @@ internal static class EncryptionParameterExtensions
         this IReadOnlyCollection<EncryptionParameter> parameters, String name)
     {
         return parameters.FirstOrDefault(p => p.Name == name)?.Value 
-            ?? throw new InvalidDataException($"Missing encryption parameter '{name}'.");
+            ?? throw new IronFormatException($"Missing encryption parameter '{name}'.");
     }
 }

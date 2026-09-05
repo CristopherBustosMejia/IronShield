@@ -1,5 +1,6 @@
 using System.CommandLine;
 using FluentAssertions;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Interfaces;
 using IronShield.Core.Models;
 using IronShield.Cli.Commands;
@@ -98,9 +99,12 @@ public sealed class UnprotectCommandTests
             UnprotectPassword = password;
 
             if (ThrowOnUnprotect)
-                throw new System.Security.Cryptography.AuthenticationTagMismatchException();
+                throw new IronPasswordException("Incorrect password.");
 
             return new UnprotectResult { Data = [] };
         }
+
+        public IntegrityVerificationResult Verify(Stream input, String password)
+            => throw new NotSupportedException();
     }
 }

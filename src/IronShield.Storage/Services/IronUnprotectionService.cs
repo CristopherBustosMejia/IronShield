@@ -1,4 +1,5 @@
 using IronShield.Core.Enums;
+using IronShield.Core.Exceptions;
 using IronShield.Core.Interfaces;
 using IronShield.Core.Models;
 
@@ -32,7 +33,7 @@ public sealed class IronUnprotectionService : IIronUnprotectionService
 
         IronBlock encryptionBlock = container.Blocks.FirstOrDefault(
             b => b.Type == IronBlockType.EncryptionInfo)
-            ?? throw new InvalidDataException("Missing encryption info block.");
+            ?? throw new IronFormatException("Missing encryption info block.");
 
         EncryptionInfo encryptionInfo = _serializer.Deserialize<EncryptionInfo>(encryptionBlock.Data);
         byte[] key = _keyDerivationProvider.DeriveKey(password, encryptionInfo.KeyDerivationParameters);
@@ -42,7 +43,7 @@ public sealed class IronUnprotectionService : IIronUnprotectionService
 
         foreach (IronBlock block in container.Blocks)
         {
-            byte[] plaintext = DecryptBlock(block, key);
+            byte[] plaintext = BlockDecryptor.Decrypt(block, key, _serializer, _encryptionProvider);
 
             switch (block.Type)
             {
@@ -58,17 +59,8 @@ public sealed class IronUnprotectionService : IIronUnprotectionService
 
         return new UnprotectResult
         {
-            Data = data ?? throw new InvalidDataException("No file content block found."),
+            Data = data ?? throw new IronFormatException("No file content block found."),
             Metadata = metadata
         };
-    }
-
-    private byte[] DecryptBlock(IronBlock block, byte[] key)
-    {
-        if (!block.IsEncrypted)
-            return block.Data;
-
-        EncryptedPayload payload = _serializer.Deserialize<EncryptedPayload>(block.Data);
-        return _encryptionProvider.Decrypt(payload, key);
     }
 }

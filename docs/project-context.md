@@ -24,8 +24,8 @@ src/
 tests/
 ├── IronShield.Core.Tests          # Placeholder (0 tests)
 ├── IronShield.Cryptography.Tests  # 18 tests
-├── IronShield.Storage.Tests       # 69 tests
-└── IronShield.Cli.Tests           # 8 tests (unit + integración)
+├── IronShield.Storage.Tests       # 89 tests
+└── IronShield.Cli.Tests           # 9 tests (unit + integración)
 ```
 
 ## Principales decisiones ya tomadas
@@ -82,6 +82,7 @@ Los lectores deben **saltar bloques con tipo desconocido** (forward compatibilit
 * `IIronProtectionService` — pipeline protect.
 * `IIronUnprotectionService` — pipeline unprotect.
 * `IIronShieldService` — fachada unificada.
+* `IIronIntegrityVerificationService` — verificación de integridad (`Verify(Stream, password)` → `IntegrityVerificationResult { IsAvailable, IsValid, HashAlgorithm }`).
 
 ### Implementaciones (Storage)
 
@@ -91,6 +92,7 @@ Los lectores deben **saltar bloques con tipo desconocido** (forward compatibilit
 * `IronBlockDataFactory` — construye los bloques desde un `IDataSource`.
 * `IronProtectionService` / `IronUnprotectionService` — pipelines.
 * `IronShieldService` — fachada con constructor de conveniencia (5 primitivos).
+* `IronIntegrityVerificationService` — descifra `FileContent` e `IntegrityData` (via `BlockDecryptor`), recomputa el hash y lo compara en tiempo constante. `IntegrityData` ausente → `IsAvailable=false`; algoritmo no soportado o hash distinto → `IsValid=false`; password incorrecta o formato inválido → `IronPasswordException` / `IronFormatException`.
 
 ### CLI
 
@@ -160,6 +162,7 @@ Los `.iron` legacy con ZIP embebido seguirán siendo legibles. Los nuevos con `D
 
 * CLI usa `System.CommandLine 2.0.9` (stable, API con `SetAction` + `ParseResult.GetValue<T>`).
 * `CliOutputService.RunSafe()` captura `AuthenticationTagMismatchException` para mostrar "Incorrect password" sin stack trace.
+* Gestión de errores unificada: jerarquía de dominio en `IronShield.Core/Exceptions` (`IronShieldException` → `IronFormatException` / `IronPasswordException`). `IronUnprotectionService` convierte el fallo de autenticación en `IronPasswordException`; los errores de formato (magic inválido, bloques faltantes, datos truncados, códigos no soportados) lanzan `IronFormatException`. La CLI mapea ambas a mensajes user-friendly.
 * Las pruebas de CLI usan `[Collection("CLI")]` con paralelización desactivada por conflicto de `AnsiConsole.Status()`.
 * `InternalsVisibleTo` desde `IronShield.Cli` hacia `IronShield.Cli.Tests`.
 * Project reference desde CLI hacia `IronShield.Core`, `IronShield.Cryptography`, `IronShield.Storage`.
